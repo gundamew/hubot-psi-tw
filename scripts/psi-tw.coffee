@@ -10,7 +10,7 @@ module.exports = (robot) ->
             response = ''
             for siteData in result
                 if siteName is siteData.SiteName
-                    response += '「' + siteData.SiteName + '」測站'
+                    response += '「' + siteData.SiteName + '」測站資訊'
                     response += "\n"
 
                     response += '即時空氣污染指標（PSI）：'
@@ -26,10 +26,18 @@ module.exports = (robot) ->
                     response += "\n"
 
                     response += '細懸浮微粒（PM2.5）濃度：'
-                    if siteData['PM2.5'] isnt '' then response += siteData['PM2.5'] + ' μg/m3' else response += '設備維護'
+                    if siteData['PM2.5'] isnt '' then response += siteData['PM2.5'] + ' μg/m3 ' + fpmiDesc siteData.FPMI else response += '設備維護'
                     response += "\n"
 
                     response += '最後更新時間：' + siteData.PublishTime
                     response += "\n"
 
                     msg.send response
+
+fpmiDesc = (fpmi) ->
+    switch
+        when 0 <= fpmi <= 35 then '低'
+        when 36 <= fpmi <= 53 then '中'
+        when 54 <= fpmi <= 70 then '高'
+        when fpmi <= 71 then '非常高'
+        else '未定義'
